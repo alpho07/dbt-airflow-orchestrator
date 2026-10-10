@@ -1,0 +1,14 @@
+services:
+  dw:
+    image: postgres:16
+    ports:
+      - "5433:5432"
+    environment:
+      POSTGRES_DB: dw
+      POSTGRES_USER: dw_user
+      POSTGRES_PASSWORD: dw_password
+    volumes:
+      - dw_data:/var/lib/postgresql/data
+
+volumes:
+  dw_data:

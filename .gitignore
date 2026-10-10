@@ -1,0 +1,23 @@
+# Python / virtualenvs
+__pycache__/
+*.pyc
+*_env/
+*_venv/
+.venv/
+
+# Airflow runtime (AIRFLOW_HOME is inside the repo)
+airflow/airflow.db*
+airflow/airflow.cfg
+airflow/logs/
+airflow/*.generated
+airflow/standalone_admin_password.txt
+
+# dbt artifacts
+dbt/**/target/
+dbt/**/dbt_packages/
+dbt/**/logs/
+
+# Secrets and local data
+.env
+profiles.yml
+data/
