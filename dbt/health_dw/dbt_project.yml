@@ -1,0 +1,27 @@
+name: 'health_dw'
+version: '1.0.0'
+profile: 'health_dw'
+
+model-paths: ["models"]
+analysis-paths: ["analyses"]
+test-paths: ["tests"]
+seed-paths: ["seeds"]
+macro-paths: ["macros"]
+snapshot-paths: ["snapshots"]
+
+clean-targets:
+  - "target"
+  - "dbt_packages"
+
+# Folder-level defaults. Precedence: model config() > properties YAML > this file.
+models:
+  health_dw:
+    staging:          # 1:1 with sources: rename, cast, clean. No joins.
+      +schema: staging
+      +materialized: view
+    intermediate:     # joins, dedup, business logic
+      +schema: intermediate
+      +materialized: view
+    marts:            # analysis-ready facts and dimensions
+      +schema: marts
+      +materialized: table

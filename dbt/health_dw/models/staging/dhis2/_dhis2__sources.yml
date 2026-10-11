@@ -1,0 +1,17 @@
+version: 2
+
+sources:
+  - name: dhis2
+    description: >
+      DHIS2 demo (Sierra Leone) analytics responses, extracted by ingestion/extract_dhis2.py.
+      One JSON snapshot per (as_of, request_key); rolling 12-month window.
+    schema: raw
+    config:
+      loaded_at_field: _loaded_at
+      freshness:
+        warn_after: {count: 26, period: hour}
+        error_after: {count: 50, period: hour}
+
+    tables:
+      - name: dhis2_analytics
+        description: Raw analytics payloads. Rows are [dx, ou, pe, value]; values are strings; sparse (no-data cells omitted).

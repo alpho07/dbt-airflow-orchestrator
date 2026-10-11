@@ -1,0 +1,42 @@
+version: 2
+
+sources:
+  - name: emr
+    description: >
+      Simulated EMR (emr_source.emr) extracted into dw.raw by ingestion/extract_emr.py.
+      Append-only: one slice per extraction window; a record appears once per window in which it changed.
+      Freshness is measured from raw._load_log, because windows with no changes load 0 rows.
+    schema: raw
+    config:
+      freshness:
+        warn_after: {count: 26, period: hour}
+        error_after: {count: 50, period: hour}
+
+    tables:
+      - name: emr_facilities
+        description: Health facilities (MFL). County casing is inconsistent at source.
+        config:
+          loaded_at_query: >
+            select max(finished_at) from raw._load_log
+            where source_table = 'facilities' and status = 'success'
+
+      - name: emr_patients
+        description: Patient registrations. Includes duplicate registrations and soft deletes (deleted_at).
+        config:
+          loaded_at_query: >
+            select max(finished_at) from raw._load_log
+            where source_table = 'patients' and status = 'success'
+
+      - name: emr_visits
+        description: Clinical encounters (OPD, HIV_CARE, ANC, PNC). Visit type casing is inconsistent.
+        config:
+          loaded_at_query: >
+            select max(finished_at) from raw._load_log
+            where source_table = 'visits' and status = 'success'
+
+      - name: emr_lab_results
+        description: Lab results from a separate lab system. visit_id may be NULL or orphaned.
+        config:
+          loaded_at_query: >
+            select max(finished_at) from raw._load_log
+            where source_table = 'lab_results' and status = 'success'
